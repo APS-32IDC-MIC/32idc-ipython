@@ -10,7 +10,7 @@ class SynApps_swait_Variable(Device):
     # inside-out naming!
     inputtrigger = FC(EpicsSignal, '{self.prefix}.IN{self.letter}P', lazy=True)
     inputname    = FC(EpicsSignal, '{self.prefix}.IN{self.letter}N', lazy=True)
-    value        = FC(EpicsSignal, '{self.prefix}.{self.letter}', lazy=True)
+    inputvalue   = FC(EpicsSignal, '{self.prefix}.{self.letter}', lazy=True)
 
     def __init__(self, prefix, letter=None, **kwargs):
         self.letter = letter.upper()
