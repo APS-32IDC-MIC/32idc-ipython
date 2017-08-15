@@ -12,6 +12,8 @@ from ophyd.areadetector import ADComponent
 class MyHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWrite):
 	
 	file_number_sync = None
+	array_callbacks = Component(EpicsSignalWithRBV, "ArrayCallbacks")
+	enable_callbacks = Component(EpicsSignalWithRBV, "EnableCallbacks")
 	
 	def get_frames_per_point(self):
 		return self.parent.cam.num_images.get()
@@ -39,5 +41,5 @@ class MySimDetector(SingleTrigger, SimDetector):
 
 simdet = MySimDetector('32idcSIM:', name='simdet')
 simdet.read_attrs = ['hdf1', 'cam']
-simdet.hdf1.read_attrs = []  # 'image' gets added dynamically
+simdet.hdf1.read_attrs = ['full_file_name']  # 'image' gets added dynamically
 simdet.cam.array_callbacks.put(1)
