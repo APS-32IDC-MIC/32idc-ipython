@@ -42,6 +42,11 @@ class FrameNotifier(bluesky.callbacks.core.CallbackBase):
                 # this is where we send info to the Verifier or Analysis pipeline
                 # required this setup:
                 #  simdet.hdf1.read_attrs = ['full_file_name']
+                #-------------
+                # emit: motor position, time, data file name, ?frame number?
+                # look into sending by zeromq or by EPICS PVs or by json
+                # perhaps a handshake from verifier that image has been received?
+                #-------------
                 print(doc['data'][self.hdf.name + '_full_file_name'])
 
 
