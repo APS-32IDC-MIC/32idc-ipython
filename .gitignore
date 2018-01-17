@@ -7,3 +7,9 @@ security/
 *.pyc
 *.pyo
 *~
+mViewer.log
+
+# eclipse IDE
+.project
+.pydevproject
+.settings
