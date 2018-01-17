@@ -1,39 +1,37 @@
 print(__file__)
 
-# Set up default metadata
+"""Set up default metadata"""
 
-import socket 
-import getpass
-import sqlite3
+from datetime import datetime
+
+RE.md['beamline_id'] = '32-ID-C'
+RE.md['proposal_id'] = None
+RE.md['pid'] = os.getpid()
+
+# Add a callback that prints scan IDs at the start of each scan.
 
 def print_scan_ids(name, start_doc):
-    """prints scan IDs at the start of each scan"""
-    print("Transient Scan ID: {0}".format(start_doc['scan_id']))
+    msg = "Transient Scan ID: "
+    msg += str(start_doc['scan_id'])
+    msg += " at "
+    msg += str(datetime.isoformat(datetime.now()))
+    print(msg)
     print("Persistent Unique Scan ID: '{0}'".format(start_doc['uid']))
 
+callback_db['print_scan_ids'] = RE.subscribe(print_scan_ids, 'start')
+
+import socket 
+import getpass 
 HOSTNAME = socket.gethostname() or 'localhost' 
-USERNAME = getpass.getuser() or 'synApps_xxx_user'
+USERNAME = getpass.getuser() or 'synApps_xxx_user' 
+RE.md['login_id'] = USERNAME + '@' + HOSTNAME
+RE.md['BLUESKY_VERSION'] = bluesky.__version__
 
-# Set up default metadata
+import os
+for key, value in os.environ.items():
+    if key.startswith("EPICS") and not key.startswith("EPICS_BASE"):
+        RE.md[key] = value
 
-md = dict(**RE.md)
-md['beamline_id'] = '32-ID-C'
-md['proposal_id'] = 'MONA project 6875'
-md['pid'] = os.getpid()
-md['login_id'] = USERNAME + '@' + HOSTNAME
-try:
-    RE.md = dict(**md)
-    RE.subscribe('start', print_scan_ids)   # add as callback
-except sqlite3.OperationalError as exc:
-    # FIXME: this is not trapping the exception yet!
-    # TODO: find the thread
-    # TODO: report the user/host/pid that has it locked
-    msg = "Cannot write to the ipython history file."
-    msg += "  It is open by another session."
-    print(msg)
-
-
-###  import os
-###  for key, value in os.environ.items():
-###	     if key.startswith("EPICS"):
-###  		     gs.RE.md[key] = value
+print("Metadata dictionary:")
+for k, v in sorted(RE.md.items()):
+    print("RE['%s']" % k, "=", v)
